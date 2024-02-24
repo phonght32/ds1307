@@ -34,28 +34,6 @@ static uint8_t dec2bcd(uint8_t val)
 	return ((val / 10) << 4) + (val % 10);
 }
 
-static err_code_t ds1307_i2c_write_reg(ds1307_handle_t handle, uint8_t reg_addr, uint8_t *buf, uint16_t len)
-{
-	uint8_t buf_send[len + 1];
-
-	buf_send[0] = reg_addr;
-	memcpy(&buf_send[1], buf, len);
-	handle->i2c_send(buf_send, len + 1);
-
-	return ERR_CODE_SUCCESS;
-}
-
-static err_code_t ds1307_i2c_read_reg(ds1307_handle_t handle, uint8_t reg_addr, uint8_t *buf, uint16_t len)
-{
-	uint8_t buffer[1];
-
-	buffer[0] = reg_addr | 0x80;
-	handle->i2c_send(buffer, 1);
-	handle->i2c_recv(buf, len);
-
-	return ERR_CODE_SUCCESS;
-}
-
 ds1307_handle_t ds1307_init(void)
 {
 	ds1307_handle_t handle = calloc(1, sizeof(ds1307_t));
@@ -105,7 +83,7 @@ err_code_t ds1307_get_time(ds1307_handle_t handle, struct tm *time)
 	err_code_t ret;
 	uint8_t buf[7];
 
-	ret = ds1307_i2c_read_reg(handle, DS1307_TIME_REG_ADDR, buf, 7);
+	ret = handle->i2c_recv(DS1307_TIME_REG_ADDR, buf, 7);
 	if (ret != ERR_CODE_SUCCESS)
 	{
 		return ERR_CODE_FAIL;
@@ -154,7 +132,7 @@ err_code_t ds1307_set_time(ds1307_handle_t handle, struct tm time)
 		dec2bcd(time.tm_year - 2000)
 	};
 
-	ret = ds1307_i2c_write_reg(handle, DS1307_TIME_REG_ADDR, buf, sizeof(buf));
+	ret = handle->i2c_send(DS1307_TIME_REG_ADDR, buf, sizeof(buf));
 	if (ret != ERR_CODE_SUCCESS)
 	{
 		return ERR_CODE_FAIL;

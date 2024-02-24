@@ -30,8 +30,8 @@ extern "C" {
 #include "time.h"
 #include "err_code.h"
 
-typedef err_code_t (*ds1307_func_i2c_send)(uint8_t *buf_send, uint16_t len);
-typedef err_code_t (*ds1307_func_i2c_recv)(uint8_t *buf_recv, uint16_t len);
+typedef err_code_t (*ds1307_func_i2c_send)(uint8_t reg_addr, uint8_t *buf_send, uint16_t len);
+typedef err_code_t (*ds1307_func_i2c_recv)(uint8_t reg_addr, uint8_t *buf_recv, uint16_t len);
 
 /**
  * @brief   Handle structure.
