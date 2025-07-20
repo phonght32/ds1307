@@ -112,7 +112,7 @@ err_code_t ds1307_get_time(ds1307_handle_t handle, struct tm *time)
 	return ERR_CODE_SUCCESS;
 }
 
-err_code_t ds1307_set_time(ds1307_handle_t handle, struct tm time)
+err_code_t ds1307_set_time(ds1307_handle_t handle, struct tm *time)
 {
 	/* Check if handle structure is NULL */
 	if (handle == NULL)
@@ -123,13 +123,13 @@ err_code_t ds1307_set_time(ds1307_handle_t handle, struct tm time)
 	err_code_t ret;
 
 	uint8_t buf[7] = {
-		dec2bcd(time.tm_sec),
-		dec2bcd(time.tm_min),
-		dec2bcd(time.tm_hour),
-		dec2bcd(time.tm_wday + 1),
-		dec2bcd(time.tm_mday),
-		dec2bcd(time.tm_mon + 1),
-		dec2bcd(time.tm_year - 2000)
+		dec2bcd(time->tm_sec),
+		dec2bcd(time->tm_min),
+		dec2bcd(time->tm_hour),
+		dec2bcd(time->tm_wday + 1),
+		dec2bcd(time->tm_mday),
+		dec2bcd(time->tm_mon + 1),
+		dec2bcd(time->tm_year - 2000)
 	};
 
 	ret = handle->i2c_send(DS1307_TIME_REG_ADDR, buf, sizeof(buf));

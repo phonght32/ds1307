@@ -106,7 +106,7 @@ err_code_t ds1307_get_time(ds1307_handle_t handle, struct tm *time);
  *      - ERR_CODE_SUCCESS: Success.
  *      - Others:           Fail.
  */
-err_code_t ds1307_set_time(ds1307_handle_t handle, struct tm time);
+err_code_t ds1307_set_time(ds1307_handle_t handle, struct tm *time);
 
 #ifdef __cplusplus
 }
