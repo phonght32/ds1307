@@ -45,48 +45,48 @@ ds1307_handle_t ds1307_init(void)
 	return handle;
 }
 
-err_code_t ds1307_set_config(ds1307_handle_t handle, ds1307_cfg_t config)
+ds1307_status_t ds1307_set_config(ds1307_handle_t handle, ds1307_cfg_t config)
 {
 	/* Check if handle structure is NULL */
 	if (handle == NULL)
 	{
-		return ERR_CODE_NULL_PTR;
+		return DS1307_STATUS_INVALID_ARG;
 	}
 
 	handle->i2c_send = config.i2c_send;
 	handle->i2c_recv = config.i2c_recv;
 
-	return ERR_CODE_SUCCESS;
+	return DS1307_STATUS_SUCCESS;
 }
 
-err_code_t ds1307_config(ds1307_handle_t handle)
+ds1307_status_t ds1307_config(ds1307_handle_t handle)
 {
 	/* Check if handle structure is NULL */
 	if (handle == NULL)
 	{
-		return ERR_CODE_NULL_PTR;
+		return DS1307_STATUS_INVALID_ARG;
 	}
 
 	/* Nothing to do */
 
-	return ERR_CODE_SUCCESS;
+	return DS1307_STATUS_SUCCESS;
 }
 
-err_code_t ds1307_get_time(ds1307_handle_t handle, struct tm *time)
+ds1307_status_t ds1307_get_time(ds1307_handle_t handle, struct tm *time)
 {
 	/* Check if handle structure is NULL */
 	if (handle == NULL)
 	{
-		return ERR_CODE_NULL_PTR;
+		return DS1307_STATUS_INVALID_ARG;
 	}
 
-	err_code_t ret;
+	ds1307_status_t ret;
 	uint8_t buf[7];
 
 	ret = handle->i2c_recv(DS1307_TIME_REG_ADDR, buf, 7);
-	if (ret != ERR_CODE_SUCCESS)
+	if (ret != DS1307_STATUS_SUCCESS)
 	{
-		return ERR_CODE_FAIL;
+		return DS1307_STATUS_FAILED;
 	}
 
 	time->tm_sec = bcd2dec(buf[0] & SECONDS_MASK);
@@ -109,18 +109,18 @@ err_code_t ds1307_get_time(ds1307_handle_t handle, struct tm *time)
 	time->tm_mon  = bcd2dec(buf[5]) - 1;
 	time->tm_year = bcd2dec(buf[6]) + 2000;
 
-	return ERR_CODE_SUCCESS;
+	return DS1307_STATUS_SUCCESS;
 }
 
-err_code_t ds1307_set_time(ds1307_handle_t handle, struct tm *time)
+ds1307_status_t ds1307_set_time(ds1307_handle_t handle, struct tm *time)
 {
 	/* Check if handle structure is NULL */
 	if (handle == NULL)
 	{
-		return ERR_CODE_NULL_PTR;
+		return DS1307_STATUS_INVALID_ARG;
 	}
 
-	err_code_t ret;
+	ds1307_status_t ret;
 
 	uint8_t buf[7] = {
 		dec2bcd(time->tm_sec),
@@ -133,10 +133,10 @@ err_code_t ds1307_set_time(ds1307_handle_t handle, struct tm *time)
 	};
 
 	ret = handle->i2c_send(DS1307_TIME_REG_ADDR, buf, sizeof(buf));
-	if (ret != ERR_CODE_SUCCESS)
+	if (ret != DS1307_STATUS_SUCCESS)
 	{
-		return ERR_CODE_FAIL;
+		return DS1307_STATUS_FAILED;
 	}
 
-	return ERR_CODE_SUCCESS;
+	return DS1307_STATUS_SUCCESS;
 }

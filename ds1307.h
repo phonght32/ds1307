@@ -28,12 +28,17 @@ extern "C" {
 #endif
 
 #include "time.h"
-#include "err_code.h"
 
 #define DS1307_I2C_ADDR  		(0x68)
 
-typedef err_code_t (*ds1307_func_i2c_send)(uint8_t reg_addr, uint8_t *buf_send, uint16_t len);
-typedef err_code_t (*ds1307_func_i2c_recv)(uint8_t reg_addr, uint8_t *buf_recv, uint16_t len);
+typedef enum {
+	DS1307_STATUS_SUCCESS,
+	DS1307_STATUS_FAILED,
+	DS1307_STATUS_INVALID_ARG
+} ds1307_status_t;
+
+typedef ds1307_status_t (*ds1307_func_i2c_send)(uint8_t reg_addr, uint8_t *buf_send, uint16_t len);
+typedef ds1307_status_t (*ds1307_func_i2c_recv)(uint8_t reg_addr, uint8_t *buf_recv, uint16_t len);
 
 /**
  * @brief   Handle structure.
@@ -57,7 +62,7 @@ typedef struct {
  *
  * @return
  *      - Handle structure: Success.
- *      - Others:           Fail.
+ *      - Others: Failed.
  */
 ds1307_handle_t ds1307_init(void);
 
@@ -68,10 +73,10 @@ ds1307_handle_t ds1307_init(void);
  * @param   config Configuration structure.
  *
  * @return
- *      - ERR_CODE_SUCCESS: Success.
- *      - Others:           Fail.
+ *      - DS1307_STATUS_SUCCESS: Success.
+ *      - Others: Failed.
  */
-err_code_t ds1307_set_config(ds1307_handle_t handle, ds1307_cfg_t config);
+ds1307_status_t ds1307_set_config(ds1307_handle_t handle, ds1307_cfg_t config);
 
 /*
  * @brief   Configure DS1307 to run.
@@ -79,10 +84,10 @@ err_code_t ds1307_set_config(ds1307_handle_t handle, ds1307_cfg_t config);
  * @param 	handle Handle structure.
  *
  * @return
- *      - ERR_CODE_SUCCESS: Success.
- *      - Others:           Fail.
+ *      - DS1307_STATUS_SUCCESS: Success.
+ *      - Others: Failed.
  */
-err_code_t ds1307_config(ds1307_handle_t handle);
+ds1307_status_t ds1307_config(ds1307_handle_t handle);
 
 /**
  * @brief   Get time.
@@ -91,10 +96,10 @@ err_code_t ds1307_config(ds1307_handle_t handle);
  * @param   time Pointer references to the struct tm.
  *
  * @return
- *      - ERR_CODE_SUCCESS: Success.
- *      - Others:           Fail.
+ *      - DS1307_STATUS_SUCCESS: Success.
+ *      - Others: Failed.
  */
-err_code_t ds1307_get_time(ds1307_handle_t handle, struct tm *time);
+ds1307_status_t ds1307_get_time(ds1307_handle_t handle, struct tm *time);
 
 /**
  * @brief   Set time.
@@ -103,10 +108,10 @@ err_code_t ds1307_get_time(ds1307_handle_t handle, struct tm *time);
  * @param   time Struct tm.
  *
  * @return
- *      - ERR_CODE_SUCCESS: Success.
- *      - Others:           Fail.
+ *      - DS1307_STATUS_SUCCESS: Success.
+ *      - Others: Failed.
  */
-err_code_t ds1307_set_time(ds1307_handle_t handle, struct tm *time);
+ds1307_status_t ds1307_set_time(ds1307_handle_t handle, struct tm *time);
 
 #ifdef __cplusplus
 }
