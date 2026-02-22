@@ -4,8 +4,5 @@ set(srcs
 set(includes 
     ".")
 
-set(requires mcu_port)
-
 idf_component_register(SRCS "${srcs}"
-                       INCLUDE_DIRS ${includes}
-                       REQUIRES ${requires})
+                       INCLUDE_DIRS ${includes})
